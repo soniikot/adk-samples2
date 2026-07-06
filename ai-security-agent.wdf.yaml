@@ -21,7 +21,7 @@ metadata:
 workload:
   source:
     git:
-      repoUrl: https://github.com/nadeem7sg/adk-samples2
+      repoUrl: https://github.com/soniikot/adk-samples2
       ref: main
       path: python/agents/ai-security-agent
 
