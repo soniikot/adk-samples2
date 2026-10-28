@@ -1,0 +1,33 @@
+# ---------------------------------------------------------------------------
+# ai-security-agent :: authoritative workload deployment manifest
+# This file is the source of truth for deployment planning / DBOM generation.
+# ---------------------------------------------------------------------------
+apiVersion: deploy.7sg.ai/v1
+kind: DeploymentManifest
+metadata:
+  name: ai-security-agent
+  workload_id: 9fc6d83c5fa65bed
+  version: 0.1.1
+spec:
+  # Canonical deployment strategy. Must be copied verbatim into the DBOM
+  # (deployment_strategy.type) and into the deployment handoff contract.
+  deploymentStrategy:
+    type: deploy
+    apply: true
+    pipeline:
+      - infra.apply
+      - docker.build
+      - registry.push
+      - provider.apply
+      - health.verify
+  target:
+    provider: gcp
+    runtime: cloud_run
+    platform: cloud_run
+  rollout:
+    maxSurge: "25%"
+    maxUnavailable: "0"
+    rollbackOnFailure: true
+  healthCheck:
+    path: /health
+    port: 8080

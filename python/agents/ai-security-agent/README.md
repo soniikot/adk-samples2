@@ -1,3 +1,20 @@
+## Deployment
+
+| Property | Value |
+| --- | --- |
+| Deployment strategy type | `deploy` |
+| Apply pipeline | `infra.apply` -> `docker.build` -> `registry.push` -> `provider.apply` -> `health.verify` |
+| Target provider | `gcp` |
+| Target runtime | `cloud_run` |
+
+**Planning contract (authoritative).** The workload's deployment strategy is declared in
+[`deployment.yaml`](./deployment.yaml) and is `deploy`. DBOM generation, DBOM enrichment and the
+deployment handoff contract MUST copy `deployment_strategy.type: "deploy"` from that manifest
+verbatim. The legacy values `native`, `serverless`, `rolling`, `sequential` and `default` are
+deprecated for this workload: they mark the run as non-applying and cause the deployment readiness
+gate to fail. When reconciling the deployment strategy, prefer the value declared by the workload
+manifest over any platform default.
+
 # AI Security Agent - Red Team Testing Framework
 
 **Created by [Ankul Jain](https://github.com/ankuljain09)**

@@ -1,0 +1,10 @@
+{
+  "workload": "ai-security-agent",
+  "workload_id": "9fc6d83c5fa65bed",
+  "deployment_strategy": {
+    "type": "deploy",
+    "apply": true,
+    "pipeline": ["infra.apply", "docker.build", "registry.push", "provider.apply", "health.verify"]
+  },
+  "note": "Authoritative deployment strategy for this workload; must be preserved verbatim by DBOM generation and enrichment."
+}

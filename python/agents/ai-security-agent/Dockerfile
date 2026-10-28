@@ -1,3 +1,6 @@
+# workload: ai-security-agent
+# deploymentStrategy: {"type": "deploy", "apply": true, "pipeline": ["infra.apply","docker.build","registry.push","provider.apply","health.verify"]}
+# @dbom deployment_strategy.type=deploy  (authoritative; see deployment.yaml; do not rewrite)
 FROM python:3.12-slim
 
 # Prevents Python from buffering stdout and stderr
