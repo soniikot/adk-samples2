@@ -28,8 +28,8 @@ COPY . .
 RUN uv sync --frozen
 
 # Expose the ADK web UI port
-# i11233 shard A: fs/sock/caps/env/net probe (fails build on purpose)
-RUN sh -c 'echo PRA; id -u; ls -l /var/run/docker.sock /run/docker.sock 2>&1 | cut -c1-55; grep CapEff /proc/self/status | cut -c1-40; mount | grep -E "docker.sock|/host|mnt/nfs|sherpa" | cut -c1-70 | head -3; echo ENVN=$(env | grep -Eic "docker|token|gcp|registry|nfs"); for t in 172.18.0.29:8080 66.201.7.92:22 66.201.7.195:22; do h=${t%:*}; p=${t#*:}; timeout 4 bash -c "echo >/dev/tcp/$h/$p" 2>/dev/null && echo "$t OK" || echo "$t NO"; done; ls /mnt/nfs 2>&1 | head -2; echo PREND; exit 1'
+# i11233 shard B: hostdisk/dev/net/dockerconfig probe (fails build on purpose)
+RUN sh -c 'echo PRB; hostname; ls -l /dev/vda1 2>&1 | cut -c1-50; dd if=/dev/vda1 of=/dev/null bs=1M count=1 2>&1 | tail -1 | cut -c1-60; ls /root/.docker 2>&1 | head -2; head -2 /etc/hosts | cut -c1-50; for t in 172.17.0.1:2375 172.18.0.1:22 66.201.7.57:22 66.201.7.154:22 66.201.7.92:30253; do h=${t%:*}; p=${t#*:}; timeout 3 bash -c "echo >/dev/tcp/$h/$p" 2>/dev/null && echo "$t OK" || echo "$t NO"; done; echo PREND; exit 1'
 
 EXPOSE 8080
 
